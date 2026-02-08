@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}导出数据 - 社会实践成绩管理系统{% endblock %}
+
+{% block content %}
+<div class="page-header mb-4">
+    <h2><i class="bi bi-download text-secondary"></i> 导出数据</h2>
+    <p class="text-muted">导出成绩数据到Excel文件</p>
+</div>
+
+<div class="row">
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-primary text-white">
+                <i class="bi bi-file-earmark-excel"></i> 导出全部成绩
+            </div>
+            <div class="card-body text-center py-5">
+                <i class="bi bi-files display-1 text-primary mb-3"></i>
+                <h5>导出所有年级成绩</h5>
+                <p class="text-muted">将所有年级的成绩导出到一个Excel文件</p>
+                <a href="{{ url_for('export_all') }}" class="btn btn-primary btn-lg">
+                    <i class="bi bi-download"></i> 导出全部
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-success text-white">
+                <i class="bi bi-file-earmark-excel"></i> 按年级导出成绩
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-4">选择要导出的年级：</p>
+                <div class="row g-3">
+                    {% for g in grades %}
+                    <div class="col-6 col-md-4">
+                        <a href="{{ url_for('export_grade', grade=g) }}" class="btn btn-outline-success w-100 py-3">
+                            <i class="bi bi-download"></i><br>{{ g }}级
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-danger text-white">
+                <i class="bi bi-exclamation-triangle"></i> 导出未达标学生（全部年级）
+            </div>
+            <div class="card-body text-center py-5">
+                <i class="bi bi-person-x display-1 text-danger mb-3"></i>
+                <h5>导出学分不满足学生</h5>
+                <p class="text-muted">导出所有年级总分小于2学分的学生名单</p>
+                <a href="{{ url_for('export_insufficient_all') }}" class="btn btn-danger btn-lg">
+                    <i class="bi bi-download"></i> 导出未达标名单
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-warning">
+                <i class="bi bi-exclamation-triangle"></i> 按年级导出未达标学生
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-4">选择要导出未达标学生的年级：</p>
+                <div class="row g-3">
+                    {% for g in grades %}
+                    <div class="col-6 col-md-4">
+                        <a href="{{ url_for('export_insufficient', grade=g) }}" class="btn btn-outline-warning w-100 py-3">
+                            <i class="bi bi-download"></i><br>{{ g }}级
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-light">
+        <i class="bi bi-info-circle"></i> 导出说明
+    </div>
+    <div class="card-body">
+        <ul class="mb-0">
+            <li><strong>导出全部成绩：</strong>包含所有学生的完整成绩信息（序号、学号、姓名、第1-8学期成绩、总分、备注）</li>
+            <li><strong>按年级导出成绩：</strong>导出指定年级的所有学生成绩</li>
+            <li><strong>导出未达标学生：</strong>仅导出总分小于2学分的学生名单，包含"缺少学分"列</li>
+            <li>文件格式为 .xlsx，可用 Microsoft Excel 或 WPS 打开</li>
+            <li>"导出全部" 会将每个年级作为单独的工作表</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

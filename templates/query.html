@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block title %}成绩查询 - 社会实践成绩管理系统{% endblock %}
+
+{% block content %}
+<div class="page-header mb-4">
+    <h2><i class="bi bi-search text-primary"></i> 成绩查询</h2>
+    <p class="text-muted">输入学号或姓名查询社会实践成绩</p>
+</div>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary text-white">
+                <i class="bi bi-search"></i> 查询条件
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">选择年级</label>
+                        <select class="form-select" name="grade" required>
+                            <option value="">-- 请选择年级 --</option>
+                            {% for g in grades %}
+                            <option value="{{ g }}">{{ g }}级</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">查询方式</label>
+                        <div class="btn-group w-100" role="group">
+                            <input type="radio" class="btn-check" name="search_type" id="byId" value="student_id" checked>
+                            <label class="btn btn-outline-primary" for="byId">按学号查询</label>
+                            <input type="radio" class="btn-check" name="search_type" id="byName" value="name">
+                            <label class="btn btn-outline-primary" for="byName">按姓名查询</label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">查询内容</label>
+                        <input type="text" class="form-control" name="search_value" placeholder="请输入学号或姓名" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-search"></i> 查询
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        {% if result %}
+        <div class="card shadow-sm result-card">
+            <div class="card-header bg-success text-white">
+                <i class="bi bi-person-check"></i> 查询结果
+            </div>
+            <div class="card-body">
+                <div class="student-info mb-4">
+                    <div class="row">
+                        <div class="col-6"><p><strong>学号：</strong>{{ result.student_id }}</p></div>
+                        <div class="col-6"><p><strong>姓名：</strong>{{ result.name }}</p></div>
+                        <div class="col-12"><p><strong>年级：</strong>{{ result.grade }}级</p></div>
+                        {% if result.remark %}
+                        <div class="col-12">
+                            <p><strong>备注：</strong><span class="text-muted">{{ result.remark }}</span></p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <h6 class="mb-3"><i class="bi bi-bar-chart"></i> 各学期成绩</h6>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-light">
+                            <tr><th>学期</th><th>成绩</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for i in range(1, 9) %}
+                            <tr>
+                                <td>第{{ i }}学期</td>
+                                <td>{{ result['semester_' ~ i] or 0 }} 分</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="total-score mt-4 p-3 rounded {% if result.total_score >= 2 %}bg-success{% else %}bg-danger{% endif %} bg-opacity-10">
+                    <h5 class="mb-2">
+                        <i class="bi bi-trophy"></i> 总分：
+                        <span class="{% if result.total_score >= 2 %}text-success{% else %}text-danger{% endif %}">
+                            {{ result.total_score }} 学分
+                        </span>
+                    </h5>
+                    {% if result.total_score >= 2 %}
+                    <p class="mb-0 text-success"><i class="bi bi-check-circle"></i> 恭喜你，已经达到标准！🎇</p>
+                    {% else %}
+                    <p class="mb-0 text-danger"><i class="bi bi-exclamation-circle"></i> <small>还未达到标准（2学分），请继续努力！💪</small></p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% elif searched %}
+        <div class="card shadow-sm">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-search display-1 text-muted"></i>
+                <p class="mt-3 text-muted">未找到相关学生信息</p>
+            </div>
+        </div>
+        {% else %}
+        <div class="card shadow-sm">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-arrow-left-circle display-1 text-muted"></i>
+                <p class="mt-3 text-muted">请在左侧输入查询条件</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% if role == 'guest' %}
+<div class="text-center mt-4">
+    <a href="{{ url_for('login') }}" class="btn btn-outline-primary">
+        <i class="bi bi-box-arrow-in-right"></i> 管理员登录
+    </a>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}控制面板 - 社会实践成绩管理系统{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="welcome-section text-center mb-5">
+        <h1 class="display-5 mb-3">
+            <i class="bi bi-emoji-smile text-primary"></i> 
+            欢迎, {{ display_name }}!
+        </h1>
+        <p class="lead text-muted">
+            {% if role == 'super_admin' %}
+            您拥有超级管理员权限，可以进行所有操作
+            {% elif role == 'admin' %}
+            您是管理员，可以进行查询和录入操作
+            {% elif role == 'user' %}
+            您是用户，可以进行查询和录入操作
+            {% else %}
+            您可以查询学生成绩信息
+            {% endif %}
+        </p>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+        <div class="col-md-4 col-lg-3">
+            <a href="{{ url_for('query') }}" class="text-decoration-none">
+                <div class="card feature-card h-100 text-center">
+                    <div class="card-body">
+                        <div class="feature-icon bg-primary bg-gradient">
+                            <i class="bi bi-search"></i>
+                        </div>
+                        <h5 class="card-title">成绩查询</h5>
+                        <p class="card-text text-muted">查询学生的社会实践成绩</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        {% if role in ['admin', 'user', 'super_admin'] %}
+        <div class="col-md-4 col-lg-3">
+            <a href="{{ url_for('input_score') }}" class="text-decoration-none">
+                <div class="card feature-card h-100 text-center">
+                    <div class="card-body">
+                        <div class="feature-icon bg-success bg-gradient">
+                            <i class="bi bi-pencil-square"></i>
+                        </div>
+                        <h5 class="card-title">成绩录入</h5>
+                        <p class="card-text text-muted">录入学生的实践成绩</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endif %}
+
+        {% if role == 'super_admin' %}
+        <div class="col-md-4 col-lg-3">
+            <a href="{{ url_for('add') }}" class="text-decoration-none">
+                <div class="card feature-card h-100 text-center">
+                    <div class="card-body">
+                        <div class="feature-icon bg-info bg-gradient">
+                            <i class="bi bi-plus-circle"></i>
+                        </div>
+                        <h5 class="card-title">添加数据</h5>
+                        <p class="card-text text-muted">添加年级或学生信息</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4 col-lg-3">
+            <a href="{{ url_for('delete') }}" class="text-decoration-none">
+                <div class="card feature-card h-100 text-center">
+                    <div class="card-body">
+                        <div class="feature-icon bg-danger bg-gradient">
+                            <i class="bi bi-trash"></i>
+                        </div>
+                        <h5 class="card-title">删除数据</h5>
+                        <p class="card-text text-muted">删除年级或学生信息</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4 col-lg-3">
+            <a href="{{ url_for('modify') }}" class="text-decoration-none">
+                <div class="card feature-card h-100 text-center">
+                    <div class="card-body">
+                        <div class="feature-icon bg-warning bg-gradient">
+                            <i class="bi bi-pencil"></i>
+                        </div>
+                        <h5 class="card-title">修改数据</h5>
+                        <p class="card-text text-muted">修改学生成绩信息</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-4 col-lg-3">
+            <a href="{{ url_for('export') }}" class="text-decoration-none">
+                <div class="card feature-card h-100 text-center">
+                    <div class="card-body">
+                        <div class="feature-icon bg-secondary bg-gradient">
+                            <i class="bi bi-download"></i>
+                        </div>
+                        <h5 class="card-title">导出数据</h5>
+                        <p class="card-text text-muted">导出成绩到Excel文件</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

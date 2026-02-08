@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+{% block title %}成绩录入 - 社会实践成绩管理系统{% endblock %}
+
+{% block content %}
+<div class="page-header mb-4">
+    <h2><i class="bi bi-pencil-square text-success"></i> 成绩录入</h2>
+    <p class="text-muted">录入学生的社会实践成绩</p>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-success text-white">
+                <i class="bi bi-pencil-square"></i> 录入成绩
+            </div>
+            <div class="card-body">
+                <!-- 警告提示框 -->
+                <div id="warning-alert" class="alert alert-warning alert-dismissible fade show" role="alert" style="display: none;">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <strong>⚠️ 注意：</strong>
+                    <span id="warning-message">该学期已有成绩，不允许重复录入！</span>
+                </div>
+
+                <form method="POST" id="input-form">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">选择年级 <span class="text-danger">*</span></label>
+                            <select class="form-select" name="grade" id="grade" required>
+                                <option value="">-- 请选择年级 --</option>
+                                {% for g in grades %}
+                                <option value="{{ g }}">{{ g }}级</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">选择学期 <span class="text-danger">*</span></label>
+                            <select class="form-select" name="semester" id="semester" required>
+                                <option value="">-- 请选择学期 --</option>
+                                {% for i in range(1, 9) %}
+                                <option value="{{ i }}">第{{ i }}学期</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">学号 <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="student_id" id="student_id" placeholder="请输入学号" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">姓名</label>
+                        <input type="text" class="form-control" id="student_name" readonly placeholder="输入学号后自动显示">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">成绩（学分） <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" name="score" step="0.1" min="0" max="10" placeholder="请输入成绩" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">备注</label>
+                        <textarea class="form-control" name="remark" rows="3" placeholder="选填：可以添加备注信息"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100" id="submit-btn">
+                        <i class="bi bi-check-circle"></i> 确认录入
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// 显示警告提示框
+function showWarning(score) {
+    const warningAlert = document.getElementById('warning-alert');
+    const warningMessage = document.getElementById('warning-message');
+    const submitBtn = document.getElementById('submit-btn');
+    
+    warningMessage.textContent = `该学期已有成绩（${score}分），不允许重复录入！`;
+    warningAlert.style.display = 'block';
+    submitBtn.disabled = true;
+}
+
+// 隐藏警告提示框
+function hideWarning() {
+    const warningAlert = document.getElementById('warning-alert');
+    const submitBtn = document.getElementById('submit-btn');
+    
+    warningAlert.style.display = 'none';
+    submitBtn.disabled = false;
+}
+
+// 检查学期成绩状态
+function checkSemesterScore() {
+    const grade = document.getElementById('grade').value;
+    const studentId = document.getElementById('student_id').value;
+    const semester = document.getElementById('semester').value;
+    
+    // 如果学号或学期为空，不显示警告
+    if (!grade || !studentId || !semester) {
+        hideWarning();
+        return;
+    }
+    
+    // 发送AJAX请求检查成绩
+    fetch(`/api/check_semester_score?grade=${grade}&student_id=${studentId}&semester=${semester}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.has_score) {
+                // 已有成绩，显示警告并禁用提交按钮
+                showWarning(data.score);
+            } else {
+                // 无成绩或学生不存在，隐藏警告并启用提交按钮
+                hideWarning();
+            }
+        })
+        .catch(error => {
+            // AJAX请求失败，隐藏警告，允许提交（依赖后端验证）
+            console.error('检查成绩失败:', error);
+            hideWarning();
+        });
+}
+
+// 获取学生姓名
+function getStudentName() {
+    const grade = document.getElementById('grade').value;
+    const studentId = document.getElementById('student_id').value;
+    
+    if (grade && studentId) {
+        fetch('/api/get_student/' + grade + '/' + studentId)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('student_name').value = data.name || '未找到该学生';
+            });
+    }
+}
+
+// 监听学号输入框的blur事件
+document.getElementById('student_id').addEventListener('blur', function() {
+    getStudentName();
+    checkSemesterScore();
+});
+
+// 监听年级选择框的change事件
+document.getElementById('grade').addEventListener('change', function() {
+    checkSemesterScore();
+});
+
+// 监听学期选择框的change事件
+document.getElementById('semester').addEventListener('change', function() {
+    checkSemesterScore();
+});
+</script>
+{% endblock %}

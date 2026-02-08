@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}添加数据 - 社会实践成绩管理系统{% endblock %}
+
+{% block content %}
+<div class="page-header mb-4">
+    <h2><i class="bi bi-plus-circle text-info"></i> 添加数据</h2>
+    <p class="text-muted">添加新年级或学生信息</p>
+</div>
+
+<div class="row">
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-info text-white">
+                <i class="bi bi-folder-plus"></i> 添加新年级
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <input type="hidden" name="action" value="add_grade">
+                    <div class="mb-3">
+                        <label class="form-label">年级编号</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="new_grade" placeholder="例如：26" pattern="[0-9]+" maxlength="2" required>
+                            <span class="input-group-text">级</span>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-info w-100">
+                        <i class="bi bi-plus-circle"></i> 创建年级
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-success text-white">
+                <i class="bi bi-person-plus"></i> 添加学生
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <input type="hidden" name="action" value="add_student">
+                    <div class="mb-3">
+                        <label class="form-label">选择年级</label>
+                        <select class="form-select" name="grade" required>
+                            <option value="">-- 请选择 --</option>
+                            {% for g in grades %}
+                            <option value="{{ g }}">{{ g }}级</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">学号</label>
+                        <input type="text" class="form-control" name="student_id" placeholder="请输入学号" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">姓名</label>
+                        <input type="text" class="form-control" name="name" placeholder="请输入姓名" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">备注（可选）</label>
+                        <input type="text" class="form-control" name="remark" placeholder="选填：可以添加备注信息">
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="bi bi-person-plus"></i> 添加学生
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <i class="bi bi-people"></i> 批量添加学生
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <input type="hidden" name="action" value="batch_add">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">选择年级</label>
+                            <select class="form-select" name="grade" required>
+                                <option value="">-- 请选择 --</option>
+                                {% for g in grades %}
+                                <option value="{{ g }}">{{ g }}级</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-8 mb-3">
+                            <label class="form-label">批量数据</label>
+                            <textarea class="form-control" name="batch_data" rows="5" placeholder="每行一条记录，格式：学号 姓名 [备注]" required></textarea>
+                            <div class="form-text">每行一条记录，学号和姓名用空格分隔，备注可选（第三列）</div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-upload"></i> 批量导入
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

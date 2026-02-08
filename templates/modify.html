@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}修改数据 - 社会实践成绩管理系统{% endblock %}
+
+{% block content %}
+<div class="page-header mb-4">
+    <h2><i class="bi bi-pencil text-warning"></i> 修改数据</h2>
+    <p class="text-muted">修改学生的成绩信息</p>
+</div>
+
+<div class="row">
+    <div class="col-lg-5 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <i class="bi bi-search"></i> 搜索学生
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <input type="hidden" name="action" value="search">
+                    <div class="mb-3">
+                        <label class="form-label">选择年级</label>
+                        <select class="form-select" name="grade" required>
+                            <option value="">-- 请选择 --</option>
+                            {% for g in grades %}
+                            <option value="{{ g }}" {% if student_data and student_data.grade == g %}selected{% endif %}>{{ g }}级</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">查询方式</label>
+                        <div class="btn-group w-100" role="group">
+                            <input type="radio" class="btn-check" name="search_type" id="byId" value="student_id" checked>
+                            <label class="btn btn-outline-primary" for="byId">按学号</label>
+                            <input type="radio" class="btn-check" name="search_type" id="byName" value="name">
+                            <label class="btn btn-outline-primary" for="byName">按姓名</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">查询内容</label>
+                        <input type="text" class="form-control" name="search_value" placeholder="请输入学号或姓名" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-search"></i> 搜索
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-7 mb-4">
+        {% if student_data %}
+        <div class="card shadow-sm">
+            <div class="card-header bg-warning">
+                <i class="bi bi-pencil"></i> 修改成绩 - {{ student_data.name }}
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <input type="hidden" name="action" value="update">
+                    <input type="hidden" name="grade" value="{{ student_data.grade }}">
+                    <input type="hidden" name="student_id" value="{{ student_data.student_id }}">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">学号</label>
+                            <input type="text" class="form-control" value="{{ student_data.student_id }}" readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">姓名</label>
+                            <input type="text" class="form-control" name="new_name" value="{{ student_data.name }}">
+                        </div>
+                    </div>
+                    <h6 class="mb-3"><i class="bi bi-bar-chart"></i> 各学期成绩</h6>
+                    <div class="row">
+                        {% for i in range(1, 9) %}
+                        <div class="col-md-3 col-6 mb-3">
+                            <label class="form-label">第{{ i }}学期</label>
+                            <input type="number" class="form-control" name="semester_{{ i }}" value="{{ student_data['semester_' ~ i] or 0 }}" step="0.1" min="0" max="10">
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">备注</label>
+                        <textarea class="form-control" name="new_remark" rows="3" placeholder="可以添加或修改备注信息">{{ student_data.remark or '' }}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-warning w-100">
+                        <i class="bi bi-check-circle"></i> 保存修改
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% else %}
+        <div class="card shadow-sm">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-arrow-left-circle display-1 text-muted"></i>
+                <p class="mt-3 text-muted">请先搜索要修改的学生</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

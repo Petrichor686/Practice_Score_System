@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}登录 - 社会实践成绩管理系统{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <div class="login-card">
+        <div class="login-header">
+            <div class="login-icon">
+                <i class="bi bi-journal-check"></i>
+            </div>
+            <h2>社会实践成绩管理系统</h2>
+            <p class="text-muted">请登录您的账号</p>
+        </div>
+        
+        <form method="POST" class="login-form">
+            <div class="mb-4">
+                <label class="form-label"><i class="bi bi-person"></i> 用户名</label>
+                <input type="text" class="form-control form-control-lg" name="username" 
+                       placeholder="请输入用户名" required autofocus>
+            </div>
+            
+            <div class="mb-4">
+                <label class="form-label"><i class="bi bi-lock"></i> 密码</label>
+                <div class="input-group">
+                    <input type="password" class="form-control form-control-lg" name="password" 
+                           id="password" placeholder="请输入密码" required>
+                    <button class="btn btn-outline-secondary" type="button" onclick="togglePassword()">
+                        <i class="bi bi-eye" id="toggleIcon"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
+                <i class="bi bi-box-arrow-in-right"></i> 登录
+            </button>
+        </form>
+        
+        <div class="login-footer">
+            <a href="{{ url_for('guest') }}" class="guest-link">
+                <i class="bi bi-person-walking"></i> 我不是管理员，仅查询成绩
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function togglePassword() {
+    const password = document.getElementById('password');
+    const icon = document.getElementById('toggleIcon');
+    if (password.type === 'password') {
+        password.type = 'text';
+        icon.classList.replace('bi-eye', 'bi-eye-slash');
+    } else {
+        password.type = 'password';
+        icon.classList.replace('bi-eye-slash', 'bi-eye');
+    }
+}
+</script>
+{% endblock %}
