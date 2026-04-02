@@ -146,7 +146,7 @@ def login():
         else:
             flash('用户名或密码错误！', 'danger')
 
-    return render_template('login.html')
+    return render_template('login2.html')
 
 
 @app.route('/guest')
