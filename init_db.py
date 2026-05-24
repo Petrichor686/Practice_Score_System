@@ -30,14 +30,21 @@ for filename in os.listdir(DATA_DIR):
 
     print(f"发现新年级：{grade}，开始导入")
 
-    # 1️⃣ 创建年级表
+    # 1️⃣ 创建年级表（包含8个学期成绩字段）
     cursor.execute(f"""
         CREATE TABLE {table_name} (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT,
-            class TEXT,
-            student_id TEXT,
-            remark TEXT
+            student_id TEXT UNIQUE NOT NULL,
+            name TEXT NOT NULL,
+            semester_1 REAL DEFAULT 0,
+            semester_2 REAL DEFAULT 0,
+            semester_3 REAL DEFAULT 0,
+            semester_4 REAL DEFAULT 0,
+            semester_5 REAL DEFAULT 0,
+            semester_6 REAL DEFAULT 0,
+            semester_7 REAL DEFAULT 0,
+            semester_8 REAL DEFAULT 0,
+            remark TEXT DEFAULT ''
         )
     """)
 
@@ -48,14 +55,13 @@ for filename in os.listdir(DATA_DIR):
     for _, row in df.iterrows():
         cursor.execute(
             f"""
-            INSERT INTO {table_name} (name, class, student_id, remark)
-            VALUES (?, ?, ?, ?)
+            INSERT INTO {table_name} (student_id, name, remark)
+            VALUES (?, ?, ?)
             """,
             (
-                row.get("姓名"),
-                row.get("班级"),
                 row.get("学号"),
-                row.get("备注")
+                row.get("姓名"),
+                row.get("备注", "")
             )
         )
 

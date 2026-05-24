@@ -28,9 +28,13 @@ wheels/
 *.egg
 
 # Database
-*.db
+
+*.db-shm
+*.db-wal
 *.sqlite
 *.sqlite3
+*.sqlite-shm
+*.sqlite-wal
 
 # Environment variables
 .env

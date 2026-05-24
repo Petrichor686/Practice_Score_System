@@ -28,6 +28,7 @@ pip install -r requirements.txt
 ```
 
 ## 运行
+
 ```txt
 先启动
 python init_db.py
@@ -46,4 +47,8 @@ python app.py
 1.更新了登陆页面
 2.将.idea文件夹添加到.gitnore中
 ```
-
+## 第三次更新
+```
+1.25级录入信息时找不到学期一“no such column: semester_1”
+2.更新初始化代码init_db.py
+```
