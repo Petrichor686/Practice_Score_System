@@ -51,4 +51,5 @@ python app.py
 ```
 1.25级录入信息时找不到学期一“no such column: semester_1”
 2.更新初始化代码init_db.py
+3.已经完成集成，后续26 27级将不会出现问题
 ```
